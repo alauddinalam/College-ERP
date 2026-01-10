@@ -1,0 +1,19 @@
+{% extends 'master.html' %}
+{% block title %}Dashboard Overview{% endblock %}
+{% block content %}
+<body class="bg-dark text-white">
+  <div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="m-0">Welcome, {{ request.user.first_name|default:request.user.username }}</h2>
+      <a href="{% url 'accounts:signout' %}" class="btn btn-warning fw-semibold">Logout</a>
+    </div>
+
+    {% if profile %}
+      <div class="card bg-secondary border-0 p-3">
+        <p class="mb-1"><strong>Email:</strong> {{ request.user.email }}</p>
+        <p class="mb-0"><strong>Roll No:</strong> {{ profile.roll_no }}</p>
+      </div>
+    {% endif %}
+  </div>
+</body>
+{% endblock %}

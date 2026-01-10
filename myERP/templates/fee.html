@@ -1,0 +1,349 @@
+{% extends 'master.html' %}
+{% block title %}Fee Management{% endblock %}
+{% block content %}
+
+<style>
+    body {
+        background-color: #1E1E1E;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+    }
+     .sidebar {
+        background-color: #121212;
+        min-height: 100vh;
+        padding-top: 20px;
+    }
+    .sidebar a {
+        color: #bbb;
+        display: block;
+        padding: 12px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .sidebar a:hover {
+        background-color: #333;
+        color: #FFD700;
+        border-radius: 5px;
+    }
+    .card {
+        background-color: #2A2A2A;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    }
+    .summary-card {
+        text-align: center;
+        padding: 20px;
+    }
+    .summary-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #FFD700;
+    }
+    .progress-bar {
+        background: linear-gradient(90deg, #FFD700, #FFA500);
+        height: 8px;
+    }
+    .status-paid {
+        color: #28a745;
+        font-weight: bold;
+    }
+    .status-partial {
+        color: #ffc107;
+        font-weight: bold;
+    }
+    .status-due {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    .fee-breakdown {
+        background-color: #333;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    .payment-history {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    .btn-pay {
+        background-color: #FFD700;
+        color: black;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .btn-pay:hover {
+        background-color: #e6c200;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">💰 Fee Management Dashboard</h2>
+
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4" data-aos="fade-up">
+            <div class="card summary-card">
+                <div class="summary-value">₹{{ total_fee|floatformat:0 }}</div>
+                <h6>Total Fee</h6>
+                <small class="text-muted">Academic Year 2025-26</small>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card summary-card">
+                <div class="summary-value">₹{{ total_paid|floatformat:0 }}</div>
+                <h6>Amount Paid</h6>
+                <small class="text-muted">{{ payment_percentage|floatformat:1 }}% of total</small>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card summary-card">
+                <div class="summary-value">₹{{ total_due|floatformat:0 }}</div>
+                <h6>Amount Due</h6>
+                {% if total_due > 0 %}
+                    <small class="text-danger">Payment Required</small>
+                {% else %}
+                    <small class="text-success">All Clear</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Progress -->
+    <div class="row mb-4" data-aos="fade-up">
+        <div class="col-12">
+            <div class="card p-3">
+                <h5>📊 Payment Progress</h5>
+                <div class="progress mb-3" style="height: 20px;">
+                    <div class="progress-bar" style="width: {{ payment_percentage }}%;">{{ payment_percentage|floatformat:1 }}%</div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <small>Paid: ₹{{ total_paid|floatformat:0 }}</small>
+                    <small>Due: ₹{{ total_due|floatformat:0 }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Tabs -->
+    <ul class="nav nav-tabs mb-4" id="feeTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="semester-tab" data-bs-toggle="tab" data-bs-target="#semester" type="button" role="tab">Semester-wise</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">Payment History</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="feeTabsContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <div class="row g-4">
+                <!-- Fee Breakdown -->
+                <div class="col-md-6" data-aos="fade-up">
+                    <div class="card p-3">
+                        <h5>📋 Fee Breakdown (Current Semester)</h5>
+                        <div class="fee-breakdown">
+                            <div class="d-flex justify-content-between">
+                                <span>Tuition Fee:</span>
+                                <span>₹35,000</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Exam Fee:</span>
+                                <span>₹5,500</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Library Fee:</span>
+                                <span>₹2,200</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Other Fees:</span>
+                                <span>₹9,300</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between font-weight-bold">
+                                <span>Total:</span>
+                                <span>₹55,000</span>
+                            </div>
+                        </div>
+                        {% if total_due > 0 %}
+                            <button class="btn-pay w-100" onclick="initiatePayment()">Pay Now</button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Payment Chart -->
+                <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card p-3">
+                        <h5>📈 Payment Overview</h5>
+                        <canvas id="feeChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Semester-wise Tab -->
+        <div class="tab-pane fade" id="semester" role="tabpanel">
+            <div class="card p-3">
+                <h5>📚 Semester-wise Fee Details</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Semester</th>
+                                <th>Total Fee</th>
+                                <th>Amount Paid</th>
+                                <th>Amount Due</th>
+                                <th>Status</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sem in semester_data %}
+                            <tr>
+                                <td><strong>Semester {{ sem.semester }}</strong></td>
+                                <td>₹{{ sem.total_fee|floatformat:0 }}</td>
+                                <td>₹{{ sem.paid|floatformat:0 }}</td>
+                                <td>₹{{ sem.due|floatformat:0 }}</td>
+                                <td>
+                                    {% if sem.due == 0 %}
+                                        <span class="status-paid">✓ Paid</span>
+                                    {% elif sem.paid > 0 %}
+                                        <span class="status-partial">⏳ Partial</span>
+                                    {% else %}
+                                        <span class="status-due">✗ Due</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar" style="width: {{ sem.percentage }}%;"></div>
+                                    </div>
+                                    <small>{{ sem.percentage|floatformat:1 }}%</small>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment History Tab -->
+        <div class="tab-pane fade" id="history" role="tabpanel">
+            <div class="card p-3">
+                <h5>📋 Payment History</h5>
+                <div class="payment-history">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Semester</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Transaction ID</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in recent_payments %}
+                                <tr>
+                                    <td>{{ payment.payment_date|date:"M d, Y" }}</td>
+                                    <td>Sem {{ payment.semester }}</td>
+                                    <td>₹{{ payment.amount|floatformat:0 }}</td>
+                                    <td>{{ payment.get_payment_method_display }}</td>
+                                    <td>{{ payment.transaction_id }}</td>
+                                    <td><span class="status-paid">✓ Completed</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-outline-light" onclick="downloadReceipt()">📄 Download Receipt</button>
+                    <button class="btn btn-outline-light ms-2" onclick="printStatement()">🖨️ Print Statement</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Important Notices -->
+    <div class="row mt-4" data-aos="fade-up">
+        <div class="col-12">
+            <div class="card p-3">
+                <h5>💡 Important Fee Information</h5>
+                <ul class="mb-0">
+                    <li>Late fee of ₹500 will be charged after due date</li>
+                    <li>Installment facility available for eligible students</li>
+                    <li>Scholarship students get 50% waiver on tuition fees</li>
+                    <li>All payments are processed through secure gateway</li>
+                    <li>For payment queries, contact finance office</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    AOS.init({ duration: 800, once: true });
+
+    // Fee Chart
+    const ctx = document.getElementById('feeChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Paid', 'Due'],
+            datasets: [{
+                data: [{{ total_paid|default:0 }}, {{ total_due|default:0 }}],
+                backgroundColor: ['#28a745', '#dc3545'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#fff' }
+                }
+            }
+        }
+    });
+
+    // Payment functions
+    function initiatePayment() {
+        alert('Payment gateway integration would be implemented here');
+        // In a real implementation, redirect to payment gateway
+    }
+
+    function downloadReceipt() {
+        alert('Receipt download functionality would be implemented here');
+    }
+
+    function printStatement() {
+        const printContent = document.querySelector('#history').innerHTML;
+        const originalContent = document.body.innerHTML;
+
+        document.body.innerHTML = `
+            <div style="padding: 20px;">
+                <h2>Fee Payment Statement</h2>
+                <p>Generated on: ${new Date().toLocaleDateString()}</p>
+                ${printContent}
+            </div>
+        `;
+
+        window.print();
+        document.body.innerHTML = originalContent;
+        location.reload();
+    }
+</script>
+
+{% endblock %}

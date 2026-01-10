@@ -1,0 +1,40 @@
+        :root{
+            --green : #20e606;
+            --blue : #102dae;
+        }
+        
+        body {
+            background-color: #1E1E1E;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .sidebar {
+            background-color: #121212;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: #bbb;
+            display: block;
+            padding: 12px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #333;
+            color: var(--blue);
+            border-radius: 5px;
+        }
+        .card {
+            background-color: #2A2A2A;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+        }
+        .progress-bar {
+            background-color: var(--green);
+        }
+        .navbar {
+            background-color: #121212;
+        }

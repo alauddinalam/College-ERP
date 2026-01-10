@@ -1,0 +1,292 @@
+{% extends 'master.html' %}
+{% block title %}Dashboard Overview{% endblock %}
+{% block content %}
+
+<style>
+    body {
+        background-color: #1E1E1E;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .sidebar {
+        background-color: #121212;
+        min-height: 100vh;
+        padding-top: 20px;
+    }
+    .sidebar a {
+        color: #bbb;
+        display: block;
+        padding: 12px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .sidebar a:hover {
+        background-color: #333;
+        color: #FFD700;
+        border-radius: 5px;
+    }
+    .card {
+        background-color: #2A2A2A;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    }
+    .card small{
+        color: #FFD700;
+    }
+    .stat-card {
+        text-align: center;
+        padding: 20px;
+    }
+    .stat-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: #FFD700;
+    }
+    .navbar {
+        background-color: #121212;
+    }
+    .chart-card {
+        padding: 15px;
+    }
+    .chart-details {
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-top: 8px;
+    }
+</style>
+
+<div class="container mt-4">
+    <!-- Stats Cards -->
+    <div class="row g-4">
+        <div class="col-md-3" data-aos="fade-up">
+            <a href="{% url 'myERP:attendance' %}" class="text-decoration-none">
+                <div class="card stat-card">
+                    <div class="stat-icon"><i class="bi bi-calendar-check"></i></div>
+                    <h5>Attendance</h5>
+                    <p>85%</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+            <a href="{% url 'myERP:fee' %}" class="text-decoration-none">
+                <div class="card stat-card">
+                    <div class="stat-icon"><i class="bi bi-cash"></i></div>
+                    <h5>Fees Paid</h5>
+                    <p>₹{{ paid }}</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+            <a href="{% url 'myERP:subjects' %}" class="text-decoration-none">
+                <div class="card stat-card">
+                    <div class="stat-icon"><i class="bi bi-book"></i></div>
+                    <h5>Subjects</h5>
+                    <p>6</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+            <a href="{% url 'myERP:notices' %}" class="text-decoration-none">
+                <div class="card stat-card">
+                    <div class="stat-icon"><i class="bi bi-bell"></i></div>
+                    <h5>Notices</h5>
+                    <p>3</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Feature Tabs -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="featureTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab" aria-controls="attendance" aria-selected="true">Attendance</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="fees-tab" data-bs-toggle="tab" data-bs-target="#fees" type="button" role="tab" aria-controls="fees" aria-selected="false">Fees</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="subjects-tab" data-bs-toggle="tab" data-bs-target="#subjects" type="button" role="tab" aria-controls="subjects" aria-selected="false">Subjects</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="notices-tab" data-bs-toggle="tab" data-bs-target="#notices" type="button" role="tab" aria-controls="notices" aria-selected="false">Notices</button>
+                </li>
+            </ul>
+            <div class="tab-content mt-3" id="featureTabsContent">
+                <div class="tab-pane fade show active" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
+                    <div class="card chart-card">
+                        <h5>📊 Attendance Trend</h5>
+                        <small>Last 6 Months Attendance (%)</small>
+                        <canvas id="attendanceChart" height="30"></canvas>
+                        <div class="chart-details">
+                            <p>Average: <strong>84%</strong></p>
+                            <p>Best Month: <strong>June (88%)</strong></p>
+                            <p>Lowest Month: <strong>May (80%)</strong></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="fees" role="tabpanel" aria-labelledby="fees-tab">
+                    <div class="card chart-card">
+                        <h5>💰 Fee Payment Progress</h5>
+                        <small>Current Academic Year</small>
+                        <canvas id="feeChart" height="30"></canvas>
+                        <div class="chart-details">
+                            <p><span style="color:#888;">●</span> Paid: ₹{{paid}}</p>
+                            <p><span style="color:#888;">●</span> Due: ₹{{due}}</p>
+                            <p>Last Payment Date: <strong>10 Aug 2025</strong></p>
+                            <p>Next Due Date: <strong>10 Sep 2025</strong></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="subjects" role="tabpanel" aria-labelledby="subjects-tab">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card p-3">
+                                <h6>💻 Computer Science</h6>
+                                <p>CS101 - Introduction to Programming</p>
+                                <small>Credits: 4 | Instructor: Dr. Smith</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-3">
+                                <h6>📊 Data Structures</h6>
+                                <p>CS201 - Algorithms and Data Structures</p>
+                                <small>Credits: 3 | Instructor: Prof. Johnson</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="notices" role="tabpanel" aria-labelledby="notices-tab">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card p-3 position-relative">
+                                <span class="badge bg-danger position-absolute top-0 end-0">High Priority</span>
+                                <h6>🏫 Semester Exams Schedule</h6>
+                                <p class="text-muted small">📅 15 Aug 2025</p>
+                                <p>Semester examinations will commence from 15th September 2025.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-3 position-relative">
+                                <span class="badge bg-warning position-absolute top-0 end-0">Medium</span>
+                                <h6>🔧 ERP System Maintenance</h6>
+                                <p class="text-muted small">📅 10 Aug 2025</p>
+                                <p>The ERP system will be under maintenance on 20th August 2025.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-3 position-relative">
+                                <span class="badge bg-success position-absolute top-0 end-0">Low</span>
+                                <h6>🎾 Sports Meet Registrations</h6>
+                                <p class="text-muted small">📅 5 Aug 2025</p>
+                                <p>Registrations for the annual sports meet are now open.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Announcements -->
+    <div class="row mt-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="col-12">
+            <div class="card p-3">
+                <h5>📢 Latest Announcements</h5>
+                <ul>
+                    <li>Semester exams start from 15th September.</li>
+                    <li>ERP will be under maintenance on 20th August.</li>
+                    <li>Sports meet registrations are open.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+AOS.init({ duration: 800, once: true });
+
+// Function to initialize attendance chart
+function initAttendanceChart() {
+    const ctx1 = document.getElementById('attendanceChart');
+    if (ctx1 && !ctx1.chart) {
+        ctx1.chart = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['March', 'April', 'May', 'June', 'July', 'August'],
+                datasets: [{
+                    label: 'Attendance %',
+                    data: [82, 85, 80, 88, 84, 85],
+                    borderColor: '#FFD700',
+                    backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#FFD700',
+                    pointBorderColor: '#fff',
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: { callbacks: {
+                        label: function(context) {
+                            return ` ${context.parsed.y}% attendance`;
+                        }
+                    }},
+                    legend: { labels: { color: '#fff' } }
+                },
+                scales: {
+                    x: { ticks: { color: '#fff' } },
+                    y: { ticks: { color: '#fff' }, min: 70, max: 100 }
+                }
+            }
+        });
+    }
+}
+
+// Function to initialize fee chart
+function initFeeChart() {
+    const ctx2 = document.getElementById('feeChart');
+    if (ctx2 && !ctx2.chart) {
+        ctx2.chart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Paid', 'Due'],
+                datasets: [{
+                    data: [140000, 20000],
+                    backgroundColor: ['#FFD700', '#555'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#fff' }
+                    },
+                    tooltip: { callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ₹${context.parsed.toLocaleString()}`;
+                        }
+                    }}
+                }
+            }
+        });
+    }
+}
+
+// Initialize charts on tab show
+document.getElementById('attendance-tab').addEventListener('shown.bs.tab', initAttendanceChart);
+document.getElementById('fees-tab').addEventListener('shown.bs.tab', initFeeChart);
+
+// Initialize active tab chart on load
+initAttendanceChart();
+</script>
+
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'master.html' %}
+{% block title %}Notices{% endblock %}
+{% block content %}
+
+<style>
+    body {
+        background-color: #1E1E1E;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+    }
+     .sidebar {
+        background-color: #121212;
+        min-height: 100vh;
+        padding-top: 20px;
+    }
+    .sidebar a {
+        color: #bbb;
+        display: block;
+        padding: 12px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .sidebar a:hover {
+        background-color: #333;
+        color: #FFD700;
+        border-radius: 5px;
+    }
+    .card {
+        background-color: #2A2A2A;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    }
+    .notice-card {
+        transition: 0.3s;
+    }
+    .notice-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 8px 20px rgba(0,0,0,0.5);
+    }
+    .notice-date {
+        color: #FFD700;
+        font-size: 0.9rem;
+    }
+    .notice-priority {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+    .priority-high {
+        background-color: #dc3545;
+        color: white;
+    }
+    .priority-medium {
+        background-color: #ffc107;
+        color: black;
+    }
+    .priority-low {
+        background-color: #28a745;
+        color: white;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">📢 Notices & Announcements</h2>
+    <div class="row g-4">
+        <div class="col-md-6" data-aos="fade-up">
+            <div class="card notice-card p-3 position-relative">
+                <span class="notice-priority priority-high">High Priority</span>
+                <h5>🏫 Semester Exams Schedule</h5>
+                <p class="notice-date">📅 Posted on: 15 Aug 2025</p>
+                <p>Semester examinations will commence from 15th September 2025. Please check the detailed schedule on the notice board.</p>
+                <small>📍 Location: Main Campus | ⏰ Time: 9:00 AM - 12:00 PM</small>
+            </div>
+        </div>
+        <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="card notice-card p-3 position-relative">
+                <span class="notice-priority priority-medium">Medium Priority</span>
+                <h5>🔧 ERP System Maintenance</h5>
+                <p class="notice-date">📅 Posted on: 10 Aug 2025</p>
+                <p>The ERP system will be under maintenance on 20th August 2025 from 10:00 PM to 2:00 AM. Services may be temporarily unavailable.</p>
+                <small>📍 Duration: 4 hours | ⏰ Expected downtime: Minimal</small>
+            </div>
+        </div>
+        <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="card notice-card p-3 position-relative">
+                <span class="notice-priority priority-low">Low Priority</span>
+                <h5>🎾 Sports Meet Registrations</h5>
+                <p class="notice-date">📅 Posted on: 5 Aug 2025</p>
+                <p>Registrations for the annual sports meet are now open. Participate in various sports events and win prizes!</p>
+                <small>📍 Deadline: 30 Aug 2025 | ⏰ Events: Football, Basketball, Athletics</small>
+            </div>
+        </div>
+        <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="card notice-card p-3 position-relative">
+                <span class="notice-priority priority-medium">Medium Priority</span>
+                <h5>📚 Library Book Return Reminder</h5>
+                <p class="notice-date">📅 Posted on: 1 Aug 2025</p>
+                <p>All borrowed books must be returned by 15th August 2025 to avoid late fees. Check your account for due dates.</p>
+                <small>📍 Location: Central Library | ⏰ Fine: ₹5 per day</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    AOS.init({ duration: 800, once: true });
+</script>
+
+{% endblock %}

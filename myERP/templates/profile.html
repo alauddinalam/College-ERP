@@ -1,0 +1,153 @@
+{% extends 'master.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+
+
+<style>
+    body {
+        background-color: #1E1E1E;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .sidebar {
+        background-color: #121212;
+        min-height: 100vh;
+        padding-top: 20px;
+    }
+    .sidebar a {
+        color: #bbb;
+        display: block;
+        padding: 12px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .sidebar a:hover {
+        background-color: #333;
+        color: #FFD700;
+        border-radius: 5px;
+    }
+    .card {
+        background-color: #2A2A2A;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    }
+    .navbar {
+        background-color: #121212;
+    }
+    .profile-img {
+        width: 130px;
+        height: 130px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #FFD700;
+    }
+    .edit-btn {
+        background-color: #FFD700;
+        color: black;
+        font-weight: bold;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+    .edit-btn:hover {
+        background-color: #e6c200;
+    }
+</style>
+{% load static %}
+<div class="container mt-4">
+    <!-- Profile Header -->
+    <div class="text-center mb-4" data-aos="fade-up">
+        <img src="{{ profile.profile_image.url }}" alt="Profile Picture" width="150" class="profile-img"> 
+        <!-- alt="Profile Photo" class="profile-img"> -->
+        <h4 class="mt-3">{{ profile.full_name }}</h4>
+        <p>Roll No: <strong>{{ roll_no }}</strong> | Course: <strong> {{ course }} </strong></p>
+        <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#editProfileModal">✏ Edit Profile</button>
+    </div>
+
+    <!-- Profile Info -->
+    <div class="row g-4">
+        <!-- Personal Details -->
+        <div class="col-md-4" data-aos="fade-up">
+            <div class="card p-3">
+                <h5>👤 Personal Details</h5>
+                <hr>
+                <p><strong>DOB:</strong> {{ dob }}</p>
+                <p><strong>Gender:</strong> {{ gender }}</p>
+                <p><strong>Blood Group:</strong>  {{ blood_group }}</p>
+            </div>
+        </div>
+
+        <!-- Academic Details -->
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card p-3">
+                <h5>🎓 Academic Details</h5>
+                <hr>
+                <p><strong>Branch:</strong> {{ branch }}</p>
+                <p><strong>Semester:</strong>{{ semester }}</p>
+                <p><strong>CGPA:</strong> {{ cgpa }}</p>
+            </div>
+        </div>
+
+        <!-- Contact Details -->
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card p-3">
+                <h5>📞 Contact Details</h5>
+                <hr>
+                <p><strong>Email:</strong> {{ email }}</p>
+                <p><strong>Phone:</strong> +91 {{ phone }}</p>
+                <p><strong>Address:</strong>{{ address }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="row mt-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="col-12">
+            <div class="card p-3">
+                <h5>💡 About Me</h5>
+                <!-- <p>I am a dedicated and passionate Computer Science student with interests in web development, AI, and cloud computing. I enjoy learning new technologies and applying them to solve real-world problems.</p> -->
+                <p>{{ about_me }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color: #2A2A2A; color: white; border-radius: 10px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-danger">
+                            {% for error in field.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="edit-btn w-100">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    AOS.init({ duration: 800, once: true });
+</script>
+
+{% endblock %}
