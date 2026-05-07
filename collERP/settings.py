@@ -27,7 +27,11 @@ SECRET_KEY = 'django-insecure-_+rk)7-2c)06-ql($8nbbw(kh4##s$vdgw7x0d9y3gk$^^0f%8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'alam-erp-1.onrender.com',
+    '127.0.0.1',
+    'localhost',
+]
 
 
 
