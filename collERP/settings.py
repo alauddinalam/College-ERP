@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os, cloudinary_storage
+# import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +30,22 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
+
+# STORAGES = {
+#     "default": {
+#         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+#     },
+# }
+
+
+
+
+
+# STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,6 +57,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myERP',
     'accounts',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +96,12 @@ WSGI_APPLICATION = 'collERP.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'Mydata',
+        'USER': 'postgres',
+        'PASSWORD': 'Alam@2312',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -126,10 +149,10 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-import os
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
@@ -140,3 +163,14 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dkzpzxosy',
+    'API_KEY': '915964321195677',
+    'API_SECRET': 'IGvcxdns3oZUBU0OlQxdb1pcW7M',
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
