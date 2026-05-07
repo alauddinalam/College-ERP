@@ -4,7 +4,9 @@ charset-normalizer==3.4.7
 cloudinary==1.44.2
 Django==6.0.1
 django-cloudinary-storage==0.3.0
+gunicorn==26.0.0
 idna==3.13
+packaging==26.2
 pillow==12.1.0
 psycopg==3.3.4
 psycopg-binary==3.3.4
