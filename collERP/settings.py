@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os, cloudinary_storage
+import dj_database_url
 # import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -99,14 +100,9 @@ WSGI_APPLICATION = 'collERP.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Mydata',
-        'USER': 'postgres',
-        'PASSWORD': 'Alam@2312',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL')
+    )
 }
 
 
